@@ -5,6 +5,7 @@ from .routes.enroll import router as enroll_router
 from .routes.events import router as events_router
 from .routes.unenroll import router as unenroll_router
 from .services.db import init_db, close_pool
+from .middleware.auth import AuthMiddleware
 
 
 @asynccontextmanager
@@ -25,6 +26,9 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
+
+# --- Middleware ---
+app.add_middleware(AuthMiddleware)
 
 # --- Routes ---
 app.include_router(enroll_router,  tags=["Ingestion"])
