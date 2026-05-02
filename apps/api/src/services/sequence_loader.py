@@ -2,9 +2,10 @@ import yaml
 import os
 from typing import Optional
 
-SEQUENCES_DIR = os.path.join(
+# Check for an environment variable first, default to local relative path
+SEQUENCES_DIR = os.getenv("SEQUENCES_DIR", os.path.join(
     os.path.dirname(__file__), "../../../../sequences"
-)
+))
 
 _cache: dict = {}
 

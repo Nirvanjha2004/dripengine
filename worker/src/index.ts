@@ -5,7 +5,7 @@ import { processEmailJob } from "./processors/email"
 
 dotenv.config()
 
-const QUEUE_NAME = "drip:email"
+const QUEUE_NAME = "drip-email"
 
 const redisConnection = {
   host: process.env.REDIS_HOST ?? "localhost",

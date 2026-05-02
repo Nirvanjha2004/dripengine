@@ -52,7 +52,7 @@ async def enqueue_step(
     """
     r = get_redis()
 
-    queue_name = "drip:email"
+    queue_name = "drip-email"
     job_id = f"{sequence_id}:{email}:{step_id}:{int(time.time())}"
 
     process_at = int((time.time() + delay_seconds) * 1000)  # BullMQ uses ms
@@ -107,7 +107,7 @@ async def cancel_pending_steps(sequence_id: str, email: str):
     this contact + sequence, and remove them.
     """
     r = get_redis()
-    queue_name = "drip:email"
+    queue_name = "drip-email"
 
     # Get all delayed job IDs from the sorted set
     delayed_jobs = await r.zrange(f"bull:{queue_name}:delayed", 0, -1)
