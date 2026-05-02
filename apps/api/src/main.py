@@ -1,41 +1,37 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
-# We will uncomment these as we build out the respective files in the routes directory
-# from src.routes import enroll, events, unenroll
+from .routes.enroll import router as enroll_router
+from .routes.events import router as events_router
+from .routes.unenroll import router as unenroll_router
+from .services.db import init_db, close_pool
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Runs on startup and shutdown.
+    - Startup  : creates DB tables if they don't exist
+    - Shutdown : closes the asyncpg connection pool cleanly
+    """
+    await init_db()
+    yield
+    await close_pool()
+
 
 app = FastAPI(
     title="DripEngine API",
-    description="Ingestion layer for the DripEngine sequence scheduler.",
+    description="Self-hostable email drip/sequence engine for developers.",
     version="0.1.0",
-    docs_url="/docs",
-    redoc_url=None,
+    lifespan=lifespan,
 )
 
-# Configure CORS
-# For self-hosting, we allow all origins by default. This can be restricted via env vars later.
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"], 
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# --- Routes ---
+app.include_router(enroll_router,  tags=["Ingestion"])
+app.include_router(events_router,  tags=["Ingestion"])
+app.include_router(unenroll_router, tags=["Ingestion"])
 
-@app.get("/health", tags=["System"])
-async def health_check():
-    """
-    Standard health check endpoint. 
-    Useful for Docker/docker-compose to verify the ingestion layer is up.
-    """
-    return {
-        "status": "healthy",
-        "service": "dripengine-api",
-        "message": "Ingestion layer is running and ready."
-    }
 
-# Route Registration
-# This wires up the isolated route files to the main application
-# app.include_router(enroll.router, prefix="/api/v1/enroll", tags=["Enrollment"])
-# app.include_router(events.router, prefix="/api/v1/event", tags=["Events"])
-# app.include_router(unenroll.router, prefix="/api/v1/unenroll", tags=["Enrollment"])
+@app.get("/health", tags=["Meta"])
+async def health():
+    return {"status": "ok", "service": "dripengine-api"}

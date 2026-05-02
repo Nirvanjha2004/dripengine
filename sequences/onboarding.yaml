@@ -1,0 +1,27 @@
+id: onboarding
+trigger: user.signup
+
+steps:
+  - id: welcome
+    delay: 0
+    template: welcome-email
+
+  - id: tip-day2
+    delay: 1d
+    template: first-tip
+    condition:
+      event_not_fired: user.completed_profile
+
+  - id: tip-day5
+    delay: 5d
+    template: second-tip
+    condition:
+      property: plan
+      equals: free
+
+  - id: upgrade-nudge
+    delay: 10d
+    template: upgrade
+    condition:
+      property: plan
+      equals: free
