@@ -24,7 +24,8 @@ async def fire_event(event_name: str, email: str, properties: dict) -> dict:
     Without this, the engine would send emails even after conditions changed.
     """
     pool = await get_pool()
-    fired_at = datetime.now(timezone.utc).isoformat()
+    # Remove .isoformat() so asyncpg gets a true datetime object
+    fired_at = datetime.now(timezone.utc)
 
     async with pool.acquire() as conn:
 

@@ -19,7 +19,8 @@ async def unenroll_contact(sequence_id: str, email: str) -> dict:
       - Your app logic decides they should leave the sequence
     """
     pool = await get_pool()
-    now = datetime.now(timezone.utc).isoformat()
+    # Remove .isoformat() so asyncpg gets a true datetime object
+    now = datetime.now(timezone.utc)
 
     async with pool.acquire() as conn:
 

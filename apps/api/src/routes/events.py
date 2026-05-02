@@ -1,35 +1,33 @@
 from fastapi import APIRouter, HTTPException
-from ..models.contact import EnrollRequest
-from ..services.enroll_service import enroll_contact
+from ..models.event import EventRequest
+from ..services.event_service import fire_event
 
 router = APIRouter()
 
 
-@router.post("/enroll", summary="Enroll a contact into a sequence")
-async def enroll(body: EnrollRequest):
+@router.post("/event", summary="Fire an event for a contact")
+async def event(body: EventRequest):
     """
-    Enrolls a contact into an email sequence.
+    Signals that something happened to a contact.
 
-    - Validates the sequence exists
-    - Stores the contact and their properties
-    - Queues all steps as delayed BullMQ jobs
+    - Logs the event to Postgres
+    - Scans all active sequences for this contact
+    - Cancels any pending steps that were gated on this event not having fired
 
     Request body:
         {
-            "sequence_id": "onboarding",
-            "contact": {
-                "email": "john@gmail.com",
-                "name": "John",
-                "timezone": "Asia/Kolkata",
-                "properties": {
-                    "plan": "free",
-                    "completed_profile": false
-                }
+            "event_name": "user.completed_profile",
+            "email": "john@gmail.com",
+            "properties": {
+                "method": "google_oauth"
             }
         }
+
+    Response tells you exactly which sequences were affected and
+    how many pending jobs were cancelled.
     """
     try:
-        result = await enroll_contact(body.sequence_id, body.contact)
+        result = await fire_event(body.event_name, body.email, body.properties)
         return result
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
