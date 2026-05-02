@@ -39,7 +39,29 @@ services:
       REDIS_PORT: 6379
       API_SECRET_KEY: supersecretkey
     volumes:
-      - ./sequences:/app/sequences   # mount YAML files into the container
+      - ./sequences:/app/sequences
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: ./worker
+    environment:
+      DATABASE_URL: postgresql://drip:drip@postgres:5432/dripengine
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PROVIDER: nodemailer
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-you@gmail.com}
+      SMTP_PASS: ${SMTP_PASS:-yourpassword}
+      SMTP_FROM: ${SMTP_FROM:-you@gmail.com}
+    volumes:
+      - ./sequences:/app/sequences
+      - ./templates:/app/templates
     depends_on:
       postgres:
         condition: service_healthy
