@@ -72,9 +72,6 @@ services:
       redis:
         condition: service_healthy
 
-volumes:
-  pgdata:
-
   dashboard:
     build:
       context: ./apps/dashboard
@@ -85,3 +82,6 @@ volumes:
       API_SECRET_KEY: supersecretkey
     depends_on:
       - api
+
+volumes:
+  pgdata:
