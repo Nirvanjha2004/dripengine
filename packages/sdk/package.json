@@ -1,6 +1,6 @@
 {
   "name": "@nirvanjha/sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Official SDK for DripEngine — self-hostable email sequence engine.",
   "author": "nirvanjha",
   "license": "MIT",
