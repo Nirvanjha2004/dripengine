@@ -53,7 +53,7 @@ DripEngine replaces all of that with a config file and an SDK call.
 **Prerequisites:** Docker Desktop
 
 ```bash
-git clone https://github.com/your-username/dripengine.git
+git clone https://github.com/nirvanjha2004/dripengine.git
 cd dripengine
 cp .env.example .env   # fill in your SMTP credentials
 docker-compose up
@@ -328,7 +328,7 @@ Full interactive docs available at `http://localhost:8000/docs` after starting t
 PRs are welcome. Please open an issue first for anything beyond small fixes.
 
 ```bash
-git clone https://github.com/your-username/dripengine.git
+git clone https://github.com/nirvanjha2004/dripengine.git
 cd dripengine
 cp .env.example .env
 docker-compose up
@@ -345,7 +345,7 @@ MIT — use it, fork it, build on it.
 ---
 
 <p align="center">
-  Built by <a href="https://github.com/your-username">@your-username</a> ·
-  <a href="https://github.com/your-username/dripengine/issues">Report a bug</a> ·
-  <a href="https://github.com/your-username/dripengine/issues">Request a feature</a>
+  Built by <a href="https://github.com/nirvanjha2004">@nirvanjha2004</a> ·
+  <a href="https://github.com/nirvanjha2004/dripengine/issues">Report a bug</a> ·
+  <a href="https://github.com/nirvanjha2004/dripengine/issues">Request a feature</a>
 </p>
