@@ -1,7 +1,15 @@
 {
-  "name": "@dripengine/sdk",
+  "name": "@nirvanjha/sdk",
   "version": "0.1.0",
   "description": "Official SDK for DripEngine — self-hostable email sequence engine.",
+  "author": "nirvanjha",
+  "license": "MIT",
+  "homepage": "https://github.com/nirvanjha2004/dripengine",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nirvanjha2004/dripengine.git"
+  },
+  "keywords": ["email", "drip", "sequence", "automation", "self-hosted"],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -17,8 +25,6 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "keywords": ["email", "drip", "sequence", "automation", "self-hosted"],
-  "license": "MIT",
   "devDependencies": {
     "tsup": "^8.0.0",
     "typescript": "^5.4.0"
