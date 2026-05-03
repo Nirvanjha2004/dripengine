@@ -74,3 +74,14 @@ services:
 
 volumes:
   pgdata:
+
+  dashboard:
+    build:
+      context: ./apps/dashboard
+    ports:
+      - "3000:3000"
+    environment:
+      API_URL: http://api:8000
+      API_SECRET_KEY: supersecretkey
+    depends_on:
+      - api
