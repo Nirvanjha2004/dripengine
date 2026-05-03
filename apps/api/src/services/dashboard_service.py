@@ -22,29 +22,29 @@ async def get_overview() -> dict:
         """)
 
         total_sent = await conn.fetchval("""
-            SELECT COUNT(*) FROM delivery_log WHERE status = 'sent'
+            SELECT COUNT(*) FROM delivery_events WHERE status = 'sent'
         """)
 
         total_skipped = await conn.fetchval("""
-            SELECT COUNT(*) FROM delivery_log WHERE status = 'skipped'
+            SELECT COUNT(*) FROM delivery_events WHERE status = 'skipped'
         """)
 
         total_failed = await conn.fetchval("""
-            SELECT COUNT(*) FROM delivery_log WHERE status = 'failed'
+            SELECT COUNT(*) FROM delivery_events WHERE status = 'failed'
         """)
 
         # Emails sent in last 24 hours
         sent_today = await conn.fetchval("""
-            SELECT COUNT(*) FROM delivery_log
+            SELECT COUNT(*) FROM delivery_events
             WHERE status = 'sent'
-              AND attempted_at >= NOW() - INTERVAL '24 hours'
+              AND created_at >= NOW() - INTERVAL '24 hours'
         """)
 
         # Recent activity — last 5 delivery events
         recent = await conn.fetch("""
-            SELECT email, sequence_id, step_id, status, reason, attempted_at
-            FROM delivery_log
-            ORDER BY attempted_at DESC
+            SELECT email, sequence_id, step_id, status, reason, created_at AS attempted_at
+            FROM delivery_events
+            ORDER BY created_at DESC
             LIMIT 5
         """)
 
@@ -83,7 +83,7 @@ async def get_sequences_health() -> dict:
                 sequence_id,
                 status,
                 COUNT(*) as count
-            FROM delivery_log
+            FROM delivery_events
             GROUP BY sequence_id, status
         """)
 
@@ -151,10 +151,10 @@ async def get_contact_timeline(email: str) -> dict:
         """, email)
 
         delivery = await conn.fetch("""
-            SELECT sequence_id, step_id, status, reason, attempted_at
-            FROM delivery_log
+            SELECT sequence_id, step_id, status, reason, created_at AS attempted_at
+            FROM delivery_events
             WHERE email = $1
-            ORDER BY attempted_at DESC
+            ORDER BY created_at DESC
         """, email)
 
     return {
@@ -205,16 +205,16 @@ async def get_delivery_logs(
     async with pool.acquire() as conn:
 
         logs = await conn.fetch(f"""
-            SELECT job_id, email, sequence_id, step_id,
-                   status, reason, attempted_at
-            FROM delivery_log
+            SELECT id AS job_id, email, sequence_id, step_id,
+                   status, reason, created_at AS attempted_at
+            FROM delivery_events
             {where}
-            ORDER BY attempted_at DESC
+            ORDER BY created_at DESC
             LIMIT ${param_count - 1} OFFSET ${param_count}
         """, *params)
 
         total = await conn.fetchval(f"""
-            SELECT COUNT(*) FROM delivery_log {where}
+            SELECT COUNT(*) FROM delivery_events {where}
         """, *params[:-2] if params else [])
 
     return {
