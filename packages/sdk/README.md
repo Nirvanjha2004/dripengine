@@ -33,7 +33,6 @@ DripEngine replaces all of that with a config file and an SDK call.
 | Self-hostable | Yes (you built it) | Yes (one command) |
 
 ---
-
 ## Features
 
 - **Sequence-as-code** — define entire email flows in YAML. Version control your sequences like any other config.
